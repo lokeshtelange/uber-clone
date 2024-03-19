@@ -25,6 +25,7 @@ resource "aws_iam_role_policy_attachment" "example-AmazonEKSClusterPolicy" {
 data "aws_vpc" "default" {
   default = true
 }
+
 #get public subnets for cluster
 data "aws_subnets" "public" {
   filter {
@@ -32,6 +33,7 @@ data "aws_subnets" "public" {
     values = [data.aws_vpc.default.id]
   }
 }
+
 #cluster provision
 resource "aws_eks_cluster" "example" {
   name     = "EKS_CLOUD"
@@ -39,8 +41,7 @@ resource "aws_eks_cluster" "example" {
 
   vpc_config {
     subnet_ids = data.aws_subnets.public.ids
-    vpc_id     = vpc-005db57d44a86fcf6  # Adding VPC ID here
-
+    vpc_id     = "vpc-005db57d44a86fcf6"  # Replace this with your actual VPC ID
   }
 
   # Ensure that IAM Role permissions are created before and deleted after EKS Cluster handling.
@@ -69,6 +70,7 @@ resource "aws_iam_role_policy_attachment" "example-AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.example1.name
 }
+
 resource "aws_iam_role_policy_attachment" "example-AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = aws_iam_role.example1.name
